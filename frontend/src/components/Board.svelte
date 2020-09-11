@@ -1,11 +1,10 @@
 <script>
-  import Square from "./Square.svelte";
-
-  var indices = [...Array(64).keys()];
+  let indices = [...Array(64).keys()];
+  let w;
 
   function isDark(i) {
-    var col = i % 8;
-    var row = (i - col) / 8;
+    let col = i % 8;
+    let row = (i - col) / 8;
     return (row + col) % 2 == 0;
   }
 </script>
@@ -13,16 +12,28 @@
 <style>
   .board {
     margin: 0 auto;
-    width: 640px;
-    height: 640px;
+    width: 100%;
+    height: 100%;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     border: 1px solid #444444;
   }
+
+  .square {
+    background-color: #f0f0f0;
+  }
+
+  .square.dark {
+    background-color: #777777;
+  }
 </style>
 
-<div class="board">
+<div
+  class="board"
+  bind:clientWidth="{w}"
+  style="max-width: 640px; height: {w}px"
+>
   {#each indices as idx}
-    <Square dark="{isDark(idx)}" />
+    <div class="square {isDark(idx) ? 'dark' : ''}"></div>
   {/each}
 </div>
