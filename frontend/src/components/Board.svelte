@@ -1,4 +1,6 @@
 <script>
+  import Counter from "./Counter.svelte";
+
   let indices = [...Array(64).keys()];
   let w;
 
@@ -10,8 +12,17 @@
 </script>
 
 <style>
-  .board {
+  .board-container {
     margin: 0 auto;
+    width: 100%;
+    max-width: 640px;
+    min-width: 80px;
+    position: relative;
+  }
+  .board {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     display: grid;
@@ -28,12 +39,11 @@
   }
 </style>
 
-<div
-  class="board"
-  bind:clientWidth="{w}"
-  style="max-width: 640px; height: {w}px"
->
-  {#each indices as idx}
-    <div class="square {isDark(idx) ? 'dark' : ''}"></div>
-  {/each}
+<div class="board-container" style="height: {w}px">
+  <div class="board" bind:clientWidth="{w}">
+    {#each indices as idx}
+      <div class="square {isDark(idx) ? 'dark' : ''}"></div>
+    {/each}
+  </div>
+  <Counter x="{80}" y="{160}" w="{80}" />
 </div>
