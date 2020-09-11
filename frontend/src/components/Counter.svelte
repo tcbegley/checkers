@@ -1,5 +1,7 @@
 <script>
-  export let x, y, w;
+  import classNames from "classnames";
+
+  export let counter, w, handleClick;
 </script>
 
 <style>
@@ -9,7 +11,7 @@
 
   .outer {
     position: absolute;
-    background-color: #eeaa55;
+    background-color: #cccccc;
     border-radius: 50%;
     width: 60%;
     height: 60%;
@@ -17,22 +19,37 @@
     margin-top: 20%;
   }
 
+  .outer.active {
+    box-shadow: 0px 0px 14px 3px rgba(193, 42, 47, 0.75);
+  }
+
+  .outer.dark {
+    background-color: #222222;
+  }
+
   .inner {
     position: absolute;
-    background-color: #eebb55;
+    background-color: #dddddd;
     border-radius: 50%;
-    width: 50%;
-    height: 50%;
-    margin-top: 25%;
-    margin-left: 25%;
+    width: 80%;
+    height: 80%;
+    margin-top: 10%;
+    margin-left: 10%;
+  }
+
+  .dark .inner {
+    background-color: #2a2a2a;
   }
 </style>
 
 <div
   class="container"
-  style="top: {y}px; left: {x}px; width: {w}px; height: {w}px;"
+  style="top: {counter.row * w}px; left: {counter.col * w}px; width: {w}px; height: {w}px;"
+  on:click="{handleClick}"
 >
-  <div class="outer">
+  <div
+    class="{classNames('outer', counter.dark && 'dark', counter.active && 'active')}"
+  >
     <div class="inner"></div>
   </div>
 </div>
