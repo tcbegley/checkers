@@ -1,5 +1,6 @@
 <script>
   import Board from "./components/Board.svelte";
+  import {player} from './stores/player'
 </script>
 
 <style>
@@ -20,5 +21,6 @@
 
 <main>
   <h1>Checkers!</h1>
+  <p>It's Player {$player + 1}'s turn</p>
   <Board />
 </main>

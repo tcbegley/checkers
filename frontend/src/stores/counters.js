@@ -1,4 +1,5 @@
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
+import { player } from './player'
 
 function squareFree(r, c, countersList) {
   if (r < 0 || r >= 8 || c < 0 || c >= 8) return false;
@@ -7,8 +8,11 @@ function squareFree(r, c, countersList) {
 
 function computeValidMoves(counter, countersList) {
   let valid = [];
-  let { row, col, dark } = counter;
-  if (dark) {
+  let { row, col, player: p } = counter;
+
+  if (get(player) !== p) return []
+
+  if (get(player)) {
     if (squareFree(row + 1, col + 1, countersList))
       valid.push([row + 1, col + 1]);
     if (squareFree(row + 1, col - 1, countersList))
@@ -32,7 +36,7 @@ function createInitialCounters() {
         id,
         row: i,
         col: j + (i % 2),
-        dark: true,
+        player: 1,
         active: false,
         validMoves: [],
       });
@@ -42,7 +46,7 @@ function createInitialCounters() {
         id,
         row: 7 - i,
         col: 7 - j - (i % 2),
-        dark: false,
+        player: 0,
         active: false,
         validMoves: [],
       });
@@ -85,6 +89,8 @@ function createCounterStore() {
         counters = counters.map(c =>
           c.id === activeCounter.id ? { ...c, row, col, active: false } : c
         );
+        // toggle player
+        player.toggle()
         // update validMoves for all counters
         counters.forEach(c => (c.validMoves = computeValidMoves(c, counters)));
 

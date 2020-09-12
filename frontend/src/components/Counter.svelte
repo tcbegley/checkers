@@ -52,7 +52,7 @@
   on:click="{handleClick}"
 >
   <div
-    class="{classNames('outer', counter.dark && 'dark', counter.active && 'active', moveable && 'moveable')}"
+    class="{classNames('outer', counter.player && 'dark', counter.active && 'active', moveable && 'moveable')}"
   >
     <div class="inner"></div>
   </div>

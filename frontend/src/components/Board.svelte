@@ -2,7 +2,7 @@
   import { derived } from "svelte/store";
   import Counter from "./Counter.svelte";
   import Square from "./Square.svelte";
-  import { counters } from "../counters";
+  import { counters } from "../stores/counters";
 
   let w;
   let rows = [...Array(8).keys()];
