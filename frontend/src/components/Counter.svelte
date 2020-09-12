@@ -1,7 +1,7 @@
 <script>
   import classNames from "classnames";
 
-  export let counter, w, handleClick;
+  export let counter, w, moveable, handleClick;
 </script>
 
 <style>
@@ -40,6 +40,10 @@
   .dark .inner {
     background-color: #2a2a2a;
   }
+
+  .outer.moveable {
+    cursor: pointer;
+  }
 </style>
 
 <div
@@ -48,7 +52,7 @@
   on:click="{handleClick}"
 >
   <div
-    class="{classNames('outer', counter.dark && 'dark', counter.active && 'active')}"
+    class="{classNames('outer', counter.dark && 'dark', counter.active && 'active', moveable && 'moveable')}"
   >
     <div class="inner"></div>
   </div>

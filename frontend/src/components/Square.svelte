@@ -1,7 +1,7 @@
 <script>
   import classNames from "classnames";
 
-  export let dark, highlight;
+  export let dark, highlight, handleClick;
 </script>
 
 <style>
@@ -15,9 +15,13 @@
 
   .square.highlight {
     box-shadow: inset 0px 0px 14px 3px rgba(193, 42, 47, 0.75);
+    cursor: pointer;
   }
 </style>
 
 <div
   class="{classNames('square', dark && 'dark', highlight && 'highlight')}"
+  on:click="{() => {
+    if (highlight) handleClick();
+  }}"
 ></div>
