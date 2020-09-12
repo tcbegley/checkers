@@ -8,9 +8,9 @@
   let rows = [...Array(8).keys()];
   let cols = [...Array(8).keys()];
 
-  const highlightedSquares = derived(counters, ($counters) => {
+  const availableMoves = derived(counters, $counters => {
     // only one counter can be active at a time, so find is ok.
-    let active = $counters.find((c) => c.active);
+    let active = $counters.find(c => c.active);
     return active ? active.validMoves : [];
   });
 </script>
@@ -39,7 +39,7 @@
       {#each cols as c}
         <Square
           dark="{(r + c) % 2 === 0}"
-          highlight="{$highlightedSquares.find(([row, col]) => row === r && col === c)}"
+          highlight="{$availableMoves.find(({ row, col }) => row === r && col === c)}"
           handleClick="{() => {
             counters.moveActiveTo(r, c);
           }}"
