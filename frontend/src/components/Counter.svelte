@@ -1,7 +1,15 @@
 <script>
   import classNames from "classnames";
+  import Crown from "./Crown.svelte";
 
   export let counter, w, handleClick;
+
+  $: outerClasses = classNames(
+    "outer",
+    counter.player && "dark",
+    counter.active && "active",
+    counter.validMoves.length > 0 && "moveable"
+  );
 </script>
 
 <style>
@@ -30,6 +38,7 @@
   .inner {
     position: absolute;
     background-color: #dddddd;
+    color: #cccccc;
     border-radius: 50%;
     width: 80%;
     height: 80%;
@@ -53,9 +62,14 @@
     if (counter.validMoves.length > 0) handleClick();
   }}"
 >
-  <div
-    class="{classNames('outer', counter.player && 'dark', counter.active && 'active', counter.validMoves.length > 0 && 'moveable')}"
-  >
-    <div class="inner"></div>
+  <div class="{outerClasses}">
+    <div class="inner">
+      {#if counter.king}
+        <Crown
+          fill="{counter.player ? '#111111' : '#bbbbbb'}"
+          style="height:70%;margin-top:15%"
+        />
+      {/if}
+    </div>
   </div>
 </div>

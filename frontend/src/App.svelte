@@ -1,6 +1,6 @@
 <script>
   import Board from "./components/Board.svelte";
-  import {player} from './stores/player'
+  import { player } from "./stores/player";
 </script>
 
 <style>

@@ -17,7 +17,14 @@ function computeValidMoves(counter, countersList, captureOnly = false) {
   let moves;
   let { row, col } = counter;
 
-  if (p) {
+  if (counter.king) {
+    moves = [
+      [1, 1],
+      [1, -1],
+      [-1, 1],
+      [-1, -1],
+    ];
+  } else if (p) {
     moves = [
       [1, 1],
       [1, -1],
@@ -64,6 +71,7 @@ function createInitialCounters() {
         player: 1,
         active: false,
         validMoves: [],
+        king: false,
       });
       id += 1;
 
@@ -74,6 +82,7 @@ function createInitialCounters() {
         player: 0,
         active: false,
         validMoves: [],
+        king: false,
       });
       id += 1;
     }
@@ -128,7 +137,17 @@ function createCounterStore() {
 
         // move and set inactive
         counters = counters.map(c =>
-          c.id === activeCounter.id ? { ...c, row, col, active: false } : c
+          c.id === activeCounter.id
+            ? // if a piece is moved *to* row 0 or 7 then the piece must either
+              // already be a king, or be promoted to a king
+              {
+                ...c,
+                row,
+                col,
+                active: false,
+                king: c.king || row == 0 || row == 7,
+              }
+            : c
         );
         if (move.captures) {
           counters = counters.filter(c => !(c.id === move.captures));
