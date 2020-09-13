@@ -44,11 +44,11 @@ function computeValidMoves(counter, countersList, captureOnly = false) {
           });
         }
       } else {
-        valid.push({ row: row + dr, col: col + dc });
+        valid.push({ row: row + dr, col: col + dc, captures: null });
       }
     }
   });
-  return captureOnly ? valid.filter(mv => mv.captures !== undefined) : valid;
+  return captureOnly ? valid.filter(mv => mv.captures !== null) : valid;
 }
 
 function createInitialCounters() {
@@ -86,9 +86,22 @@ function createInitialCounters() {
   return initialCounters;
 }
 
+function updateAllValidMoves(counters, movedPiece) {
+  if (movedPiece === null) {
+    return counters.map(c => ({
+      ...c,
+      validMoves: computeValidMoves(c, counters),
+    }));
+  }
+  return counters.map(c =>
+    c.id === movedPiece
+      ? { ...c, validMoves: computeValidMoves(c, counters, true) }
+      : { ...c, validMoves: [] }
+  );
+}
+
 function createCounterStore() {
   const { subscribe, update } = writable(createInitialCounters());
-  let movedPiece = null;
 
   return {
     subscribe,
@@ -119,30 +132,15 @@ function createCounterStore() {
         );
         if (move.captures) {
           counters = counters.filter(c => !(c.id === move.captures));
-          movedPiece = activeCounter.id;
-        } else {
-          // toggle player
-          player.toggle();
-          movedPiece = null;
+          counters = updateAllValidMoves(counters, activeCounter.id);
         }
 
-        // update validMoves for all counters
-        counters.forEach(c => {
-          if (movedPiece === c.id) {
-            c.validMoves = computeValidMoves(c, counters, true);
-          } else if (movedPiece === null) {
-            c.validMoves = computeValidMoves(c, counters);
-          } else {
-            c.validMoves = [];
-          }
-        });
-
-        if (movedPiece && !counters.find(c => c.id === movedPiece).length) {
+        if (
+          !move.captures ||
+          !counters.find(c => c.id === activeCounter.id).validMoves.length
+        ) {
           player.toggle();
-          movedPiece = null;
-          counters.forEach(
-            c => (c.validMoves = computeValidMoves(c, counters))
-          );
+          counters = updateAllValidMoves(counters, null);
         }
 
         return counters;
