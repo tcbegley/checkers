@@ -51,10 +51,7 @@
     <Counter
       counter="{c}"
       w="{w / 8}"
-      moveable="{c.validMoves.length > 0}"
-      handleClick="{() => {
-        if (c.validMoves.length > 0) counters.setActive(c.row, c.col);
-      }}"
+      handleClick="{() => counters.setActive(c.row, c.col)}"
     />
   {/each}
 </div>

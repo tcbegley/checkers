@@ -1,7 +1,7 @@
 <script>
   import classNames from "classnames";
 
-  export let counter, w, moveable, handleClick;
+  export let counter, w, handleClick;
 </script>
 
 <style>
@@ -49,10 +49,12 @@
 <div
   class="container"
   style="top: {counter.row * w}px; left: {counter.col * w}px; width: {w}px; height: {w}px;"
-  on:click="{handleClick}"
+  on:click="{() => {
+    if (counter.validMoves.length > 0) handleClick();
+  }}"
 >
   <div
-    class="{classNames('outer', counter.player && 'dark', counter.active && 'active', moveable && 'moveable')}"
+    class="{classNames('outer', counter.player && 'dark', counter.active && 'active', counter.validMoves.length > 0 && 'moveable')}"
   >
     <div class="inner"></div>
   </div>
