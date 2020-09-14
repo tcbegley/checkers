@@ -5,11 +5,11 @@ function inBounds(r, c) {
   return r >= 0 && r < 8 && c >= 0 && c < 8;
 }
 
-function getOccupant(r, c, countersList) {
-  return countersList.find(counter => counter.row === r && counter.col === c);
+function getOccupant(r, c, counters) {
+  return counters.find(counter => counter.row === r && counter.col === c);
 }
 
-function computeValidMoves(counter, countersList, captureOnly = false) {
+function computeValidMoves(counter, counters, captureOnly = false) {
   let p = get(player);
   if (p !== counter.player) return [];
 
@@ -37,12 +37,12 @@ function computeValidMoves(counter, countersList, captureOnly = false) {
   }
   moves.forEach(([dr, dc]) => {
     if (inBounds(row + dr, col + dc)) {
-      let occupant = getOccupant(row + dr, col + dc, countersList);
+      let occupant = getOccupant(row + dr, col + dc, counters);
       if (occupant) {
         if (
           occupant.player !== p &&
           inBounds(row + 2 * dr, col + 2 * dc) &&
-          !getOccupant(row + 2 * dr, col + 2 * dc, countersList)
+          !getOccupant(row + 2 * dr, col + 2 * dc, counters)
         ) {
           valid.push({
             row: row + 2 * dr,
@@ -60,7 +60,7 @@ function computeValidMoves(counter, countersList, captureOnly = false) {
 
 function createInitialCounters() {
   let initialCounters = [];
-  let id = 0;
+  let id = 1;
 
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 8; j += 2) {
