@@ -1,5 +1,5 @@
 import { get, writable } from "svelte/store";
-import { player } from "./player";
+import { game } from "./game";
 
 function inBounds(r, c) {
   return r >= 0 && r < 8 && c >= 0 && c < 8;
@@ -10,7 +10,7 @@ function getOccupant(r, c, counters) {
 }
 
 function computeValidMoves(counter, counters, captureOnly = false) {
-  let p = get(player);
+  let p = get(game).player;
   if (p !== counter.player) return [];
 
   let valid = [];
@@ -158,7 +158,7 @@ function createCounterStore() {
           !move.captures ||
           !counters.find(c => c.id === activeCounter.id).validMoves.length
         ) {
-          player.toggle();
+          game.togglePlayer();
           counters = updateAllValidMoves(counters, null);
         }
 

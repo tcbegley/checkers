@@ -1,26 +1,51 @@
 <script>
   import Board from "./components/Board.svelte";
-  import { player } from "./stores/player";
+  import Controls from "./components/Controls.svelte";
 </script>
 
 <style>
   main {
+    margin: 0 1em;
+  }
+  .container {
     text-align: center;
-    padding: 1em;
-    max-width: 800px;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    box-sizing: border-box;
+    flex-wrap: wrap;
   }
 
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
+  .game-board {
+    flex: 1 0 100%;
+    max-width: 100vh;
+    width: 100%;
+    margin: 1em;
+  }
+
+  .game-controls {
+    flex: 0 0 min(80%, 500px);
+    text-align: left;
+    margin: 1em;
+  }
+
+  @media (min-width: 1150px) {
+    .game-controls {
+      flex-basis: auto;
+      width: 250px;
+      margin-left: 1.5em;
+    }
   }
 </style>
 
 <main>
-  <h1>Checkers!</h1>
-  <p>It's Player {$player + 1}'s turn</p>
-  <Board />
+  <div class="container">
+    <div class="game-board">
+      <Board />
+    </div>
+    <div class="game-controls">
+      <Controls />
+    </div>
+  </div>
 </main>

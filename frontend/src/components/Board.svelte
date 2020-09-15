@@ -3,6 +3,7 @@
   import Counter from "./Counter.svelte";
   import Square from "./Square.svelte";
   import { counters } from "../stores/counters";
+  import { game } from "../stores/game";
 
   let w;
   let rows = [...Array(8).keys()];
@@ -19,7 +20,7 @@
   .board-container {
     margin: 0 auto;
     width: 100%;
-    max-width: 640px;
+    max-width: calc(100vh - 5.2em);
     min-width: 80px;
     position: relative;
     border: 1px solid #444444;
@@ -30,6 +31,11 @@
     width: 100%;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
+  }
+
+  p {
+    height: 1.2em;
+    vertical-align: middle;
   }
 </style>
 
@@ -55,3 +61,4 @@
     />
   {/each}
 </div>
+<p>It's Player {$game.player + 1}'s turn</p>
