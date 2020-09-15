@@ -2,16 +2,15 @@
   import { derived } from "svelte/store";
   import Counter from "./Counter.svelte";
   import Square from "./Square.svelte";
-  import { counters } from "../stores/counters";
   import { game } from "../stores/game";
 
   let w;
   let rows = [...Array(8).keys()];
   let cols = [...Array(8).keys()];
 
-  const availableMoves = derived(counters, $counters => {
+  const availableMoves = derived(game, $game => {
     // only one counter can be active at a time, so find is ok.
-    let active = $counters.find(c => c.active);
+    let active = $game.counters.find(c => c.active);
     return active ? active.validMoves : [];
   });
 </script>
@@ -47,17 +46,17 @@
           dark="{(r + c) % 2 === 0}"
           highlight="{$availableMoves.find(({ row, col }) => row === r && col === c)}"
           handleClick="{() => {
-            counters.moveActiveTo(r, c);
+            game.moveActiveTo(r, c);
           }}"
         />
       {/each}
     </div>
   {/each}
-  {#each $counters as c (c.id)}
+  {#each $game.counters as c (c.id)}
     <Counter
       counter="{c}"
       w="{w / 8}"
-      handleClick="{() => counters.setActive(c.row, c.col)}"
+      handleClick="{() => game.setActive(c.row, c.col)}"
     />
   {/each}
 </div>
