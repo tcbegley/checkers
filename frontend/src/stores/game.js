@@ -114,14 +114,21 @@ function updateAllValidMoves(counters, movedPiece, player) {
 }
 
 function createGameStore() {
+  const initialCounters = createInitialCounters();
   const { subscribe, update } = writable({
-    move: 0,
+    time: 0,
     player: 0,
-    counters: createInitialCounters(),
+    counters: initialCounters,
+    history: [initialCounters],
   });
 
   const moveTo = (startRow, startCol, endRow, endCol) => game => {
-    let { counters, player } = game;
+    let { counters, player, history, time } = game;
+
+    if (time < history.length - 1) {
+      counters = history[time];
+      history = history.slice(0, time + 1);
+    }
 
     let chosenCounter = counters.find(
       c => c.row === startRow && c.col === startCol
@@ -158,14 +165,48 @@ function createGameStore() {
       !counters.find(c => c.id === chosenCounter.id).validMoves.length
     ) {
       player = 1 - player;
+      time += 1;
       counters = updateAllValidMoves(counters, null, player);
+      history.push(counters);
+    } else {
+      time = history.length - 1;
     }
 
-    return {
-      ...game,
-      player,
-      counters: counters,
-    };
+    return { time, player, counters, history };
+  };
+
+  const stepForward = game => {
+    let { time, history, player } = game;
+
+    if (time < history.length - 1) {
+      time += 1;
+      return {
+        ...game,
+        active: { row: null, col: null },
+        time,
+        player: 1 - player,
+        counters: history[time],
+      };
+    }
+
+    return game;
+  };
+
+  const stepBackward = game => {
+    let { time, history, player } = game;
+
+    if (time > 0) {
+      time -= 1;
+      return {
+        ...game,
+        active: { row: null, col: null },
+        time,
+        player: 1 - player,
+        counters: history[time],
+      };
+    }
+
+    return game;
   };
 
   return {
@@ -186,6 +227,8 @@ function createGameStore() {
         let activeCounter = game.counters.find(c => c.active);
         return moveTo(activeCounter.row, activeCounter.col, row, col)(game);
       }),
+    previous: () => update(stepBackward),
+    next: () => update(stepForward),
   };
 }
 
