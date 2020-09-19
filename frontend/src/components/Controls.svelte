@@ -29,7 +29,6 @@
   button {
     display: block;
     font-weight: 400;
-    color: #212529;
     text-align: center;
     border: 1px solid rgb(193, 42, 47);
     padding: 0.375rem 0.75rem;
