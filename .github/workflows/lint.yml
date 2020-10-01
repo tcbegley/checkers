@@ -1,0 +1,32 @@
+name: Lint
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Install Prettier
+        working-directory: frontend
+        run: npm install
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Upgrade pip
+        run: |
+          # install pip=>20.1 to use "pip cache dir"
+          python3 -m pip install --upgrade pip
+      - name: Install nox
+        run: |
+          python3 -m pip install nox
+      - name: Lint Python
+        run: nox -s lint
+      - name: Lint JavaScript
+        working-directory: frontend
+        run: npm run lint
