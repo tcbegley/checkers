@@ -9,11 +9,7 @@
   let rows = [...Array(8).keys()];
   let cols = [...Array(8).keys()];
 
-  $: previousClasses = classNames(
-    "btn",
-    "prev",
-    $game.time <= 0 && "disabled"
-  );
+  $: previousClasses = classNames("btn", "prev", $game.time <= 0 && "disabled");
   $: nextClasses = classNames(
     "btn",
     "next",

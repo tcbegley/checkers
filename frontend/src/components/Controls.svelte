@@ -1,3 +1,7 @@
+<script>
+  export let players;
+</script>
+
 <style>
   label {
     font-weight: 600;
@@ -63,7 +67,19 @@
 </style>
 
 <label for="player-1-select">Player 1</label>
-<select><option value="human">Human</option></select>
+<select>
+  <option value="human">Human</option>
+  {#each players as p}
+    <option value="{p}">{p}</option>
+  {/each}
+</select>
 <label for="player-2-select">Player 2</label>
-<select><option value="human">Human</option></select>
+<select>
+  <option value="human">Human</option>
+  {#if players}
+    {#each players as p}
+      <option value="{p}">{p}</option>
+    {/each}
+  {/if}
+</select>
 <button>Start</button>

@@ -1,6 +1,15 @@
 <script>
+  import { onMount } from "svelte";
+
   import Board from "./components/Board.svelte";
   import Controls from "./components/Controls.svelte";
+
+  let players = [];
+
+  onMount(async () => {
+    const res = await fetch(`${process.env.CHECKERS_BACKEND}/players`);
+    players = await res.json();
+  });
 </script>
 
 <style>
@@ -45,7 +54,7 @@
       <Board />
     </div>
     <div class="game-controls">
-      <Controls />
+      <Controls players="{players}" />
     </div>
   </div>
 </main>
