@@ -1,0 +1,9 @@
+# Python artifacts
+*.egg-info
+__pycache__
+dist
+*.pyc
+
+# testing
+.nox
+.pytest_cache
