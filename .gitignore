@@ -7,3 +7,4 @@ dist
 # testing
 .nox
 .pytest_cache
+*.rest
