@@ -1,13 +1,18 @@
 import json
-from typing import List
+from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 
 class Move(BaseModel):
     row: int
     col: int
-    captures: bool
+    captures: Optional[int]
 
 
 class Counter(BaseModel):
@@ -38,8 +43,9 @@ class GameState(BaseModel):
 
     @classmethod
     def from_string(cls, string: str) -> "GameState":
-        game_state = json.loads(string)
-        game_state["history"] = [
-            [Counter(**c) for c in cs] for cs in game_state["history"]
-        ]
-        return cls(**game_state)
+        return cls(**json.loads(string))
+
+
+class NewGame(BaseModel):
+    id: constr(regex=r"[a-z]{3}-[a-z]{4}-[a-z]{3}")  # noqa
+    game_state: GameState

@@ -57,7 +57,10 @@ def valid_moves_for_counter(
 
     for dr, dc in moves:
         if in_bounds(row + dr, col + dc):
-            occupant = get_occupant(row + dr, col + dc, counters)
+            try:
+                occupant = get_occupant(row + dr, col + dc, counters)
+            except ValueError:
+                occupant = None
 
             if occupant is not None:
                 if (
@@ -73,10 +76,10 @@ def valid_moves_for_counter(
                             captures=occupant.id,
                         )
                     )
-                else:
-                    valid.append(
-                        Move(row=row + dr, col=col + dc, captures=None)
-                    )
+            else:
+                valid.append(
+                    Move(row=row + dr, col=col + dc, captures=None)
+                )
 
     if capture_only:
         return [move for move in valid if move.captures is not None]
@@ -115,7 +118,7 @@ def create_initial_counters() -> List[Counter]:
 
     for counter in initial_counters:
         counter.valid_moves = valid_moves_for_counter(
-            counter, initial_counters, 0
+            counter, initial_counters, 1
         )
 
     return initial_counters

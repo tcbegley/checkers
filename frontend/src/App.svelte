@@ -1,21 +1,14 @@
 <script>
-  import { onMount } from "svelte";
-
   import Board from "./components/Board.svelte";
-  import Controls from "./components/Controls.svelte";
-
-  let players = [];
-
-  onMount(async () => {
-    const res = await fetch(`${process.env.CHECKERS_BACKEND}/players`);
-    players = await res.json();
-  });
+  import CreateGame from "./components/CreateGame.svelte";
+  import { gameID } from "./stores";
 </script>
 
 <style>
   main {
     margin: 0 1em;
   }
+
   .container {
     text-align: center;
     margin: 0 auto;
@@ -33,7 +26,7 @@
     margin: 1em;
   }
 
-  .game-controls {
+  /* .game-controls {
     flex: 0 0 min(80%, 500px);
     text-align: left;
     margin: 1em;
@@ -45,16 +38,17 @@
       width: 250px;
       margin-left: 1.5em;
     }
-  }
+  } */
 </style>
 
 <main>
   <div class="container">
-    <div class="game-board">
-      <Board />
-    </div>
-    <div class="game-controls">
-      <Controls players="{players}" />
-    </div>
+    {#if $gameID}
+      <div class="game-board">
+        <Board />
+      </div>
+    {:else}
+      <CreateGame />
+    {/if}
   </div>
 </main>

@@ -4,6 +4,7 @@ from typing import Dict, List
 from urllib.parse import urlparse
 
 import asyncio_redis
+import pydantic
 
 from checkers_backend.counters import create_initial_counters, move_to
 from checkers_backend.models import Counter, GameState
@@ -19,17 +20,17 @@ class GameStore(abc.ABC):
         pass
 
     @abc.abstractmethod
-    async def create_game(self, game_id: int) -> None:
+    async def create_game(self, game_id: pydantic.UUID4) -> None:
         pass
 
     @abc.abstractmethod
-    async def get(self, game_id: int) -> GameState:
+    async def get(self, game_id: pydantic.UUID4) -> GameState:
         pass
 
     @abc.abstractmethod
     async def move_to(
         self,
-        game: int,
+        game_id: str,
         start_row: int,
         start_col: int,
         end_row: int,
@@ -40,7 +41,7 @@ class GameStore(abc.ABC):
 
 class MemoryGameStore(GameStore):
     def __init__(self) -> None:
-        self.store: Dict[int, GameState] = {}
+        self.store: Dict[str, GameState] = {}  # noqa
 
     async def connect(self) -> None:
         pass
@@ -48,18 +49,22 @@ class MemoryGameStore(GameStore):
     async def disconnect(self) -> None:
         pass
 
-    async def create_game(self, game_id: int) -> None:
+    async def create_game(self, game_id: str) -> GameState:
+        initial_counters = create_initial_counters()
         self.store[game_id] = GameState(
+            id=game_id,
             player=1,
-            history=[create_initial_counters()],
+            counters=initial_counters,
+            history=[initial_counters],
         )
+        return self.store[game_id]
 
-    async def get(self, game_id: int) -> GameState:
+    async def get(self, game_id: str) -> GameState:
         return self.store[game_id]
 
     async def move_to(
         self,
-        game_id: int,
+        game_id: str,
         start_row: int,
         start_col: int,
         end_row: int,
@@ -72,7 +77,9 @@ class MemoryGameStore(GameStore):
             start_row, start_col, end_row, end_col, history[-1], player
         )
 
-        game_state = GameState(player=player, history=[*history, counters])
+        game_state = GameState(
+            id=game_id, player=player, history=[*history, counters]
+        )
         self.store[game_id] = game_state
 
         return game_state
@@ -92,36 +99,38 @@ class RedisGameStore(GameStore):
     async def disconnect(self) -> None:
         await self._conn.close()
 
-    async def create_game(self, game_id: int) -> None:
-        game_state = {
-            "player": 1,
-            "history": [[c.dict() for c in create_initial_counters()]],
-        }
-        await self._conn.set(str(game_id), json.dumps(game_state), expire=3600)
+    async def create_game(self, game_id: str) -> None:
+        game_state = GameState(player=1, history=[create_initial_counters()])
+        await self._conn.set(game_id, game_state.json(), expire=3600)
 
-    async def get(self, game_id: int) -> GameState:
-        game_state_str = await self._conn.get(str(game_id))
+    async def get(self, game_id: str) -> GameState:
+        game_state_str = await self._conn.get(game_id)
         return GameState.from_string(game_state_str)
 
     async def move_to(
         self,
-        game_id: int,
+        game_id: str,
         start_row: int,
         start_col: int,
         end_row: int,
         end_col: int,
     ) -> GameState:
-        game_state = json.loads(await self._conn.get(str(game_id)))
-        player = game_state["player"]
-        history = game_state["history"]
+        game_state = await self.get(game_id)
 
         player, counters = move_to(
-            start_row, start_col, end_row, end_col, history[-1], player
+            start_row,
+            start_col,
+            end_row,
+            end_col,
+            game_state.history[-1],
+            game_state.player,
         )
 
-        game_state = GameState(player=player, history=[*history, counters])
+        game_state = GameState(
+            player=player, history=[*game_state.history, counters]
+        )
 
-        # TODO: save to Redis
+        await self._conn.set(game_id, game_state.json(), expire=3600)
         return game_state
 
 

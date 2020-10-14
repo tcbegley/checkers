@@ -6,9 +6,9 @@
 
   $: outerClasses = classNames(
     "outer",
-    counter.player && "dark",
+    counter.player == 2 && "dark",
     counter.active && "active",
-    counter.validMoves.length > 0 && "moveable"
+    counter.valid_moves.length > 0 && "moveable"
   );
 </script>
 
@@ -58,7 +58,7 @@
   class="container"
   style="top: {counter.row * w}px; left: {counter.col * w}px; width: {w}px; height: {w}px;"
   on:click="{() => {
-    if (counter.validMoves.length > 0) handleClick();
+    if (counter.valid_moves.length > 0) handleClick();
   }}"
 >
   <div class="{outerClasses}">

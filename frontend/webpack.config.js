@@ -53,7 +53,7 @@ module.exports = {
     }),
     // replace CHECKERS_API_URL environment variable in build.
     new webpack.EnvironmentPlugin({
-      CHECKERS_BACKEND: "http://localhost:8000",
+      CHECKERS_BACKEND: "localhost:8000",
     }),
   ],
   devtool: prod ? false : "source-map",
