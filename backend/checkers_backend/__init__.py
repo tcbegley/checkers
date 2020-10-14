@@ -1,15 +1,13 @@
 import json
 import os
 
-import fastapi
-import pydantic
 from broadcaster import Broadcast
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from jose import jwt
+# from jose import jwt
 from starlette.concurrency import run_until_first_complete
 
-from checkers_backend.models import GameState, NewGame, Token
+from checkers_backend.models import NewGame  #, Token
 from checkers_backend.store import get_store
 from checkers_backend.utils import generate_id
 

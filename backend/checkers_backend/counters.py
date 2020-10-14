@@ -19,9 +19,12 @@ def find(seq: Sequence[T], match: Callable[[T], bool]) -> T:
 def get_occupant(
     row: int, col: int, counters: List[Counter]
 ) -> Optional[Counter]:
-    return find(
-        counters, lambda counter: counter.row == row and counter.col == col
-    )
+    try:
+        return find(
+            counters, lambda counter: counter.row == row and counter.col == col
+        )
+    except ValueError:
+        return None
 
 
 def valid_moves_for_counter(
@@ -128,7 +131,7 @@ def update_all_valid_moves(
     counters: List[Counter], moved_piece: Optional[int], player: int
 ) -> List[Counter]:
     if moved_piece is None:
-        [
+        return [
             Counter.from_counter_with_moves(
                 c, valid_moves_for_counter(c, counters, player)
             )
