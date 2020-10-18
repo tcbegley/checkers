@@ -1,6 +1,6 @@
 # build environment
 FROM node:14-alpine as build
-ARG CHECKERS_BACKEND=http://localhost:8000
+ARG CHECKERS_BACKEND="localhost:8000"
 WORKDIR /checkers/frontend
 ENV PATH /checkers/frontend/node_modules/.bin:$PATH
 COPY package* ./
