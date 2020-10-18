@@ -3,13 +3,12 @@ import os
 from typing import Optional
 
 from broadcaster import Broadcast
-from fastapi import FastAPI, HTTPException, WebSocket
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from jose import jwt
 from starlette.concurrency import run_until_first_complete
 
 from checkers_backend.models import NewGame, Token
-from checkers_backend.store import GameFullError, GameNotFoundError, get_store
+from checkers_backend.store import GameFullError, get_store
 from checkers_backend.utils import generate_id
 
 try:

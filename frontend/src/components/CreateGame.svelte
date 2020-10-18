@@ -47,7 +47,9 @@
     border: 1px solid rgb(193, 42, 47);
     box-sizing: border-box;
     padding: 0.375rem 0.75rem;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    font-family: monospace;
+    text-align: center;
   }
 
   .container {
