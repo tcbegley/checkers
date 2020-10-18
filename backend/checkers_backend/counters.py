@@ -80,9 +80,7 @@ def valid_moves_for_counter(
                         )
                     )
             else:
-                valid.append(
-                    Move(row=row + dr, col=col + dc, captures=None)
-                )
+                valid.append(Move(row=row + dr, col=col + dc, captures=None))
 
     if capture_only:
         return [move for move in valid if move.captures is not None]

@@ -36,10 +36,20 @@ class Counter(BaseModel):
             valid_moves=moves,
         )
 
+    def clear_valid_moves(self):
+        self.valid_moves = []
+        return self
 
-class GameState(BaseModel):
+
+class BoardState(BaseModel):
     player: int
     history: List[List[Counter]]
+
+
+class GameState(BaseModel):
+    board_state: BoardState
+    local_play: bool
+    player_count: int
 
     @classmethod
     def from_string(cls, string: str) -> "GameState":
@@ -47,5 +57,5 @@ class GameState(BaseModel):
 
 
 class NewGame(BaseModel):
-    id: constr(regex=r"[a-z]{3}-[a-z]{4}-[a-z]{3}")  # noqa
+    id: constr(regex=r"^[a-z]{3}-[a-z]{4}-[a-z]{3}$")  # type: ignore  # noqa
     game_state: GameState

@@ -1,14 +1,15 @@
 import json
 import os
+from typing import Optional
 
 from broadcaster import Broadcast
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, HTTPException, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-# from jose import jwt
+from jose import jwt
 from starlette.concurrency import run_until_first_complete
 
-from checkers_backend.models import NewGame  #, Token
-from checkers_backend.store import get_store
+from checkers_backend.models import NewGame, Token
+from checkers_backend.store import GameFullError, GameNotFoundError, get_store
 from checkers_backend.utils import generate_id
 
 try:
@@ -36,37 +37,75 @@ app.add_middleware(
 )
 
 
-@app.post("/game", response_model=NewGame)
+@app.post("/game", response_model=NewGame, status_code=201)
 async def post_game() -> NewGame:
     game_id = generate_id()
     game_state = await STORE.create_game(game_id)
     return NewGame(id=game_id, game_state=game_state)
 
 
-@app.get("/game/{game_id}", response_model=NewGame)
-async def get_game(game_id: str) -> NewGame:
-    game_state = await STORE.get(game_id)
-    return NewGame(id=game_id, game_state=game_state)
-
-
 @app.websocket("/ws/{game_id}")
-async def game_ws(websocket: WebSocket, game_id: str):
+async def game_ws(
+    websocket: WebSocket, game_id: str, token: Optional[Token] = None
+):
     await websocket.accept()
     await run_until_first_complete(
-        (game_ws_receiver, {"websocket": websocket, "game_id": game_id}),
+        (
+            game_ws_receiver,
+            {"websocket": websocket, "game_id": game_id, "token": token},
+        ),
         (game_ws_sender, {"websocket": websocket, "game_id": game_id}),
     )
 
 
-async def game_ws_receiver(websocket: WebSocket, game_id: str):
+async def game_ws_receiver(
+    websocket: WebSocket, game_id: str, token: Optional[Token]
+):
     async for data in websocket.iter_json():
         if data["action"] == "moveTo":
-            game_state = await STORE.move_to(game_id, **data["data"])
+            game_state = await STORE.move_to(
+                game_id,
+                start_row=data["start_row"],
+                start_col=data["start_col"],
+                end_row=data["end_row"],
+                end_col=data["end_col"],
+            )
             await BROADCASTER.publish(
                 channel=game_id,
                 message=json.dumps(
                     {
-                        "action": "updateCounters",
+                        "action": "updateGameState",
+                        "game_state": game_state.dict(),
+                    }
+                ),
+            )
+        elif data["action"] == "joinGame":
+            try:
+                game_state = await STORE.add_player(game_id)
+            except GameFullError:
+                websocket.send_json(
+                    {
+                        "action": "displayError",
+                        "message": "Sorry, the chosen game is full.",
+                    }
+                )
+
+            await BROADCASTER.publish(
+                channel=game_id,
+                message=json.dumps(
+                    {
+                        "action": "updateGameState",
+                        "game_state": game_state.dict(),
+                    }
+                ),
+            )
+        elif data["action"] == "playLocally":
+            game_state = await STORE.play_locally(game_id)
+            await BROADCASTER.publish(
+                channel=game_id,
+                message=json.dumps(
+                    {
+                        "action": "updateGameState",
                         "game_state": game_state.dict(),
                     }
                 ),

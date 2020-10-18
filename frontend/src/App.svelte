@@ -1,8 +1,20 @@
 <script>
   import Board from "./components/Board.svelte";
   import CreateGame from "./components/CreateGame.svelte";
-  import { gameID } from "./stores";
+  import { board } from "./stores";
 </script>
+
+<main>
+  <div class="container">
+    {#if $board.counters}
+      <div class="game-board">
+        <Board />
+      </div>
+    {:else}
+      <CreateGame />
+    {/if}
+  </div>
+</main>
 
 <style>
   main {
@@ -25,30 +37,4 @@
     width: 100%;
     margin: 1em;
   }
-
-  /* .game-controls {
-    flex: 0 0 min(80%, 500px);
-    text-align: left;
-    margin: 1em;
-  }
-
-  @media (min-width: 1150px) {
-    .game-controls {
-      flex-basis: auto;
-      width: 250px;
-      margin-left: 1.5em;
-    }
-  } */
 </style>
-
-<main>
-  <div class="container">
-    {#if $gameID}
-      <div class="game-board">
-        <Board />
-      </div>
-    {:else}
-      <CreateGame />
-    {/if}
-  </div>
-</main>

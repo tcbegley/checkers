@@ -1,16 +1,36 @@
 <script>
   import classNames from "classnames";
+
   import Crown from "./Crown.svelte";
 
-  export let counter, w, handleClick;
+  export let counter, w, handleClick, allowMoves;
 
   $: outerClasses = classNames(
     "outer",
     counter.player == 2 && "dark",
     counter.active && "active",
-    counter.valid_moves.length > 0 && "moveable"
+    allowMoves && counter.valid_moves.length > 0 && "moveable"
   );
 </script>
+
+<div
+  class="container"
+  style="top: {counter.row * w}px; left: {counter.col * w}px; width: {w}px; height: {w}px;"
+  on:click="{() => {
+    if (allowMoves && counter.valid_moves.length > 0) handleClick();
+  }}"
+>
+  <div class="{outerClasses}">
+    <div class="inner">
+      {#if counter.king}
+        <Crown
+          fill="{counter.player === 2 ? '#222222' : '#bbbbbb'}"
+          style="height:70%;margin-top:15%"
+        />
+      {/if}
+    </div>
+  </div>
+</div>
 
 <style>
   .container {
@@ -53,22 +73,3 @@
     cursor: pointer;
   }
 </style>
-
-<div
-  class="container"
-  style="top: {counter.row * w}px; left: {counter.col * w}px; width: {w}px; height: {w}px;"
-  on:click="{() => {
-    if (counter.valid_moves.length > 0) handleClick();
-  }}"
->
-  <div class="{outerClasses}">
-    <div class="inner">
-      {#if counter.king}
-        <Crown
-          fill="{counter.player ? '#222222' : '#bbbbbb'}"
-          style="height:70%;margin-top:15%"
-        />
-      {/if}
-    </div>
-  </div>
-</div>

@@ -4,6 +4,13 @@
   export let dark, highlight, handleClick;
 </script>
 
+<div
+  class="{classNames('square', dark && 'dark', highlight && 'highlight')}"
+  on:click="{() => {
+    if (highlight) handleClick();
+  }}"
+></div>
+
 <style>
   .square {
     background-color: #f0f0f0;
@@ -18,10 +25,3 @@
     cursor: pointer;
   }
 </style>
-
-<div
-  class="{classNames('square', dark && 'dark', highlight && 'highlight')}"
-  on:click="{() => {
-    if (highlight) handleClick();
-  }}"
-></div>

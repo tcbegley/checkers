@@ -1,27 +1,73 @@
 <script>
   import classNames from "classnames";
   import { derived } from "svelte/store";
+
+  import { moveActiveTo } from "../gameService";
+  import { board, players } from "../stores";
   import Counter from "./Counter.svelte";
+  import InviteModal from "./InviteModal.svelte";
   import Square from "./Square.svelte";
-  import { game, moveActiveTo } from "../stores";
 
   let w;
   let rows = [...Array(8).keys()];
   let cols = [...Array(8).keys()];
 
-  $: previousClasses = classNames("btn", "prev", $game.time <= 0 && "disabled");
+  $: previousClasses = classNames(
+    "btn",
+    "prev",
+    $board.time <= 0 && "disabled"
+  );
   $: nextClasses = classNames(
     "btn",
     "next",
-    $game.time >= $game.history.length - 1 && "disabled"
+    $board.time >= $board.history.length - 1 && "disabled"
   );
+  $: allPlayersJoined =
+    ($players.localPlay && $players.playerCount === 1) ||
+    (!$players.localPlay && $players.playerCount === 2);
 
-  const availableMoves = derived(game, $game => {
+  $: allowMoves = $players.localPlay || $players.player === $board.player;
+
+  const availableMoves = derived(board, $board => {
     // only one counter can be active at a time, so find is ok.
-    let active = $game.counters.find(c => c.active);
+    let active = $board.counters.find(
+      c => c.row === $board.active.row && c.col === $board.active.col
+    );
     return active ? active.valid_moves : [];
   });
 </script>
+
+{#if !allPlayersJoined}
+  <InviteModal />
+{/if}
+<div class="board-container" style="height: {w}px">
+  {#each rows as r}
+    <div class="row" bind:clientWidth="{w}" style="height: {w / 8}px">
+      {#each cols as c}
+        <Square
+          dark="{(r + c) % 2 === 0}"
+          highlight="{$availableMoves.find(({ row, col }) => row === r && col === c)}"
+          handleClick="{() => {
+            moveActiveTo(r, c);
+          }}"
+        />
+      {/each}
+    </div>
+  {/each}
+  {#each $board.counters as c (c.id)}
+    <Counter
+      allowMoves="{allowMoves}"
+      counter="{c}"
+      w="{w / 8}"
+      handleClick="{() => board.setActive(c.row, c.col)}"
+    />
+  {/each}
+</div>
+<div class="board-footer">
+  <span>It's Player {$board.player}'s turn</span>
+  <button on:click="{board.previous}" class="{previousClasses}">❮</button>
+  <button on:click="{board.next}" class="{nextClasses}">❯</button>
+</div>
 
 <style>
   .board-container {
@@ -84,31 +130,3 @@
     cursor: default;
   }
 </style>
-
-<div class="board-container" style="height: {w}px">
-  {#each rows as r}
-    <div class="row" bind:clientWidth="{w}" style="height: {w / 8}px">
-      {#each cols as c}
-        <Square
-          dark="{(r + c) % 2 === 0}"
-          highlight="{$availableMoves.find(({ row, col }) => row === r && col === c)}"
-          handleClick="{() => {
-            moveActiveTo(r, c);
-          }}"
-        />
-      {/each}
-    </div>
-  {/each}
-  {#each $game.counters as c (c.id)}
-    <Counter
-      counter="{c}"
-      w="{w / 8}"
-      handleClick="{() => game.setActive(c.row, c.col)}"
-    />
-  {/each}
-</div>
-<div class="board-footer">
-  <span>It's Player {$game.player}'s turn</span>
-  <button on:click="{game.previous}" class="{previousClasses}">❮</button>
-  <button on:click="{game.next}" class="{nextClasses}">❯</button>
-</div>
