@@ -25,6 +25,7 @@ BROADCASTER = Broadcast(BROADCAST_URL)
 app = FastAPI(
     on_startup=[STORE.connect, BROADCASTER.connect],
     on_shutdown=[STORE.disconnect, BROADCASTER.disconnect],
+    root_path=os.getenv("BACKEND_ROOT_PATH", ""),
 )
 
 app.add_middleware(

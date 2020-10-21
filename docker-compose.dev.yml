@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  redis:
+    ports:
+      - 6379:6379
+  backend:
+    command: uvicorn checkers_backend:app --reload --host 0.0.0.0
+    ports:
+      - 8000:8000
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /checkers/backend
+  frontend:
+    build:
+      target: build
+    command: npm start
+    environment:
+      - WEBPACK_DEV_SERVER_HOST=0.0.0.0
+    ports:
+      - 80:9000
+    volumes:
+      - type: bind
+        source: ./frontend
+        target: /checkers/frontend

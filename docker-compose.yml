@@ -3,17 +3,11 @@ version: "3.7"
 services:
   redis:
     image: redis
-    ports:
-      - 6379:6379
   backend:
     build: ./backend
     environment:
       - BROADCAST_URL=redis://redis:6379
-    ports:
-      - 8000:8000
   frontend:
     build: ./frontend
-    ports:
-      - 80:80
     depends_on:
       - backend
