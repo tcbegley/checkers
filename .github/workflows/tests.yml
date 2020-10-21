@@ -21,5 +21,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install nox
       - name: Run tests
+        working-directory: backend
         run: |
           nox -s test-${{ matrix.python-version }}

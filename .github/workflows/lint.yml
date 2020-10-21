@@ -26,6 +26,7 @@ jobs:
         run: |
           python3 -m pip install nox
       - name: Lint Python
+        working-directory: backend
         run: nox -s lint
       - name: Lint JavaScript
         working-directory: frontend

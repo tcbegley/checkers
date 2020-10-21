@@ -1,6 +1,6 @@
 import nox
 
-SOURCES = ["backend", "tests", "noxfile.py"]
+SOURCES = ["checkers_backend", "tests", "noxfile.py"]
 
 
 @nox.session()
@@ -18,8 +18,6 @@ def test(session):
     """Run tests"""
     session.install("poetry")
     env = {"VIRTUAL_ENV": session.virtualenv.location}
-    session.chdir("backend")
     session.run("poetry", "install", "--no-dev", env=env, external=True)
-    session.chdir("..")
     session.install("pytest")
     session.run("pytest")
