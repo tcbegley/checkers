@@ -16,7 +16,7 @@ services:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
   backend:
-    command: gunicorn checkers_backend:app -b 0.0.0.0:8000 -w 2 -k uvicorn.workers.UvicornWorker
+    command: poetry run gunicorn checkers_backend:app -b 0.0.0.0:8000 -w 2 -k uvicorn.workers.UvicornWorker
     expose:
       - "8000"
     environment:
