@@ -30,9 +30,11 @@
 
   const availableMoves = derived(board, $board => {
     // only one counter can be active at a time, so find is ok.
-    let active = $board.active && $board.counters.find(
-      c => c.row === $board.active.row && c.col === $board.active.col
-    );
+    let active =
+      $board.active &&
+      $board.counters.find(
+        c => c.row === $board.active.row && c.col === $board.active.col
+      );
     return active ? active.valid_moves : [];
   });
 </script>
