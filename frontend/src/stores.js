@@ -55,16 +55,22 @@ function createBoardStore() {
     setBoardState,
     previous: () => update(stepBackward),
     next: () => update(stepForward),
-    setActive: (row, col) =>
-      update(board => ({
-        ...board,
-        counters: board.counters.map(c =>
-          c.row === row && c.col === col
-            ? { ...c, active: !c.active }
-            : { ...c, active: false }
-        ),
-        active: { row, col },
-      })),
+    toggleActive: (row, col) =>
+      update(board => {
+        const counter = board.counters.find(
+          c => c.row === row && c.col === col
+        );
+        const isActive = counter.active;
+        return {
+          ...board,
+          counters: board.counters.map(c =>
+            c.id === counter.id
+              ? { ...c, active: !c.active }
+              : { ...c, active: false }
+          ),
+          active: isActive ? null : { row, col },
+        };
+      }),
   };
 }
 

@@ -3,7 +3,6 @@ import { board, gameID, players } from "./stores";
 let moveActiveTo, socket;
 
 gameID.subscribe(async id => {
-  console.log(`Updating: ${id}`);
   if (id) {
     socket = new WebSocket(`ws://${process.env.CHECKERS_BACKEND}/ws/${id}`);
     socket.onmessage = event => {
