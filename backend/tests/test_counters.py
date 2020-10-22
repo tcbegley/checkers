@@ -1,5 +1,6 @@
 import pytest
-from checkers_backend.counters import in_bounds, find, get_occupant
+
+from checkers_backend.counters import find, get_occupant, in_bounds
 from checkers_backend.models import Counter
 
 
