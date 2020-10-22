@@ -1,7 +1,7 @@
 <script>
   import { fade } from "svelte/transition";
 
-  import { joinGame, playLocally } from "../gameService";
+  import { playLocally } from "../gameService";
   import { gameID } from "../stores";
   import Button from "./Button.svelte";
   import Loader from "./Loader.svelte";

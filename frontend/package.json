@@ -8,26 +8,47 @@
     "start": "webpack-dev-server",
     "build": "cross-env NODE_ENV=production webpack",
     "lint": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "jest src",
+    "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
     "classnames": "^2.2.6",
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.12.1",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/svelte": "^3.0.0",
+    "babel-jest": "^26.6.0",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
     "dotenv": "^8.2.0",
     "dotenv-webpack": "^3.0.0",
+    "jest": "^26.6.0",
     "mini-css-extract-plugin": "^0.6.0",
     "prettier": "^2.1.1",
     "prettier-plugin-svelte": "^1.2.1",
     "serve": "^11.0.0",
     "style-loader": "^0.23.1",
     "svelte": "^3.0.0",
+    "svelte-jester": "^1.1.5",
     "svelte-loader": "2.13.3",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.3.1"
-  }
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.js$": "babel-jest",
+      "^.+\\.svelte$": "svelte-jester"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "svelte"
+    ]
+  },
+  "setupFilesAfterEnv": [
+    "@testing-library/jest-dom/extend-expect"
+  ]
 }

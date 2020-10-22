@@ -1,5 +1,5 @@
 <script>
-  export let disabled, handleClick;
+  export let disabled = false, handleClick = null;
 </script>
 
 <button on:click="{handleClick}" disabled="{disabled}"><slot /></button>
