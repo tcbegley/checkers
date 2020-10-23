@@ -3,7 +3,7 @@ import { writable } from "svelte/store";
 function createBoardStore() {
   const { subscribe, update } = writable({
     time: 0,
-    player: 0,
+    player: 1,
     counters: null,
     history: [],
     active: { row: null, col: null },
@@ -25,7 +25,7 @@ function createBoardStore() {
         ...board,
         active: { row: null, col: null },
         time,
-        player: 1 - player,
+        player: 3 - player,
         counters: history[time],
       };
     }
@@ -42,7 +42,7 @@ function createBoardStore() {
         ...board,
         active: { row: null, col: null },
         time,
-        player: 1 - player,
+        player: 3 - player,
         counters: history[time],
       };
     }
