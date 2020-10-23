@@ -1,6 +1,7 @@
 # Checkers
 
-![Tests](https://github.com/tcbegley/checkers/workflows/Tests/badge.svg) ![Lint](https://github.com/tcbegley/checkers/workflows/Lint/badge.svg)
+![Tests](https://github.com/tcbegley/checkers/workflows/Tests/badge.svg)
+![Lint](https://github.com/tcbegley/checkers/workflows/Lint/badge.svg)
 
 A game of Checkers I built to learn about [Svelte][svelte], websockets, and
 [Docker][docker].
@@ -8,17 +9,10 @@ A game of Checkers I built to learn about [Svelte][svelte], websockets, and
 Run the app with
 
 ```sh
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build
+docker-compose up
 ```
 
-or in development mode (mounts the source code into the container so that
-changes are reflected) with
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
-```
-
-In either case navigate to [localhost][localhost] to view the app.
+then navigate to [localhost][localhost].
 
 ## Run manually without docker
 
@@ -39,6 +33,18 @@ npm install
 
 # start the frontend
 npm start
+```
+
+This will use a memory backend to store the state of each game so it is
+important that you do not run the backend with more than one worker otherwise
+bad things might happen.
+
+To allow multiple workers, the app can use Redis to store the state of ongoing
+games. If you have a Redis server running locally, set the `BROADCAST_URL`
+environment variable appropriately before running the backend.
+
+```sh
+BROADCAST_URL=redis://redis:6379 uvicorn checkers_backend:app
 ```
 
 [svelte]: https://svelte.dev/
