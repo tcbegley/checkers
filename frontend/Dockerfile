@@ -2,10 +2,10 @@
 FROM node:14-alpine as build
 ARG CHECKERS_BACKEND="localhost:8000"
 WORKDIR /checkers/frontend
-ENV PATH /checkers/frontend/node_modules/.bin:$PATH
 COPY package* ./
 RUN npm ci --silent
 COPY . ./
+ENV PATH /checkers/frontend/node_modules/.bin:$PATH
 RUN CHECKERS_BACKEND=${CHECKERS_BACKEND} npm run build
 
 FROM nginx:alpine

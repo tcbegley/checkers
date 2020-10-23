@@ -11,7 +11,8 @@ Run the app with
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build
 ```
 
-or in development mode (hot reloading when source code changes) with
+or in development mode (mounts the source code into the container so that
+changes are reflected) with
 
 ```sh
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
