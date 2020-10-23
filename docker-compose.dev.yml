@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 
 services:
   redis:
@@ -9,9 +9,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - type: bind
-        source: ./backend
-        target: /checkers/backend
+      - ./backend:/checkers/backend
   frontend:
     build:
       target: build
@@ -21,6 +19,5 @@ services:
     ports:
       - 80:9000
     volumes:
-      - type: bind
-        source: ./frontend
-        target: /checkers/frontend
+      - ./frontend/public:/checkers/frontend/public
+      - ./frontend/src:/checkers/frontend/src
