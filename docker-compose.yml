@@ -36,7 +36,7 @@ services:
     build:
       context: ./frontend
       args:
-        - CHECKERS_BACKEND=${VARIABLE:-localhost/api}
+        - CHECKERS_BACKEND=${CHECKERS_BACKEND:-localhost/api}
     labels:
       - traefik.enable=true
       - traefik.http.routers.frontend.rule=PathPrefix(`/`)
