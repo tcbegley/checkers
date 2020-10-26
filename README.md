@@ -44,7 +44,7 @@ games. If you have a Redis server running locally, set the `BROADCAST_URL`
 environment variable appropriately before running the backend.
 
 ```sh
-BROADCAST_URL=redis://redis:6379 uvicorn checkers_backend:app
+BROADCAST_URL=redis://localhost:6379 uvicorn checkers_backend:app
 ```
 
 [svelte]: https://svelte.dev/
